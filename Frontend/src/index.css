@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+line-clamp-2 {
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.active-menu {
+  background-color: #F4B342;
+  font-weight: bold;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* animation cho khung search */
+/* Ẩn mặc định */
+
+/* Khi mở dropdown */
+.search-results.show {
+    animation: fadeInDown 0.35s ease forwards;
+    pointer-events: auto;
+}
+
+/* Khi đóng dropdown */
+.search-results.hide {
+    animation: fadeOutUp 0.35s ease forwards;
+    pointer-events: none;
+}
+
+/* Keyframes */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
