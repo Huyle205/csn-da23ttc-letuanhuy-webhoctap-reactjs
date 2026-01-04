@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { apiClient } from "../../services/apiClient";
 import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +12,10 @@ const BasicThumbnails = [
     "../src/assets/img/Thumnail/t4.jpeg",
     "../src/assets/img/Thumnail/t5.jpeg",
     "../src/assets/img/Thumnail/t6.jpeg",
+    "../src/assets/img/Thumnail/TKW.jpg",
+    "../src/assets/img/Thumnail/CSDL.png",
+    "../src/assets/img/Thumnail/MMT.jpg",
+    "../src/assets/img/Thumnail/DTDM.png",
 ];
 
 
@@ -24,6 +28,7 @@ const CreateCourse = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
 
     const handleThumbnailChange = (e) => {
         const file = e.target.files[0];
@@ -41,6 +46,14 @@ const CreateCourse = () => {
             setThumbnail(file);
             setThumbnailPreview(URL.createObjectURL(file));
             setError("");
+        }
+    };
+
+    const handleRemoveThumbnail = () => {
+        setThumbnail(null);
+        setThumbnailPreview("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
         }
     };
 
@@ -67,11 +80,19 @@ const CreateCourse = () => {
             
             if (thumbnail) {
                 formData.append('thumbnail', thumbnail);
+                console.log("✅ Đã thêm thumbnail vào FormData:", thumbnail.name);
             } else {
                 // Chọn random một thumbnail từ mảng BasicThumbnails
                 const randomIndex = Math.floor(Math.random() * BasicThumbnails.length);
                 const randomThumbnail = BasicThumbnails[randomIndex];
                 formData.append('defaultThumbnail', randomThumbnail);
+                console.log("✅ Sử dụng thumbnail mặc định:", randomThumbnail);
+            }
+
+            // Debug: In ra tất cả entries của FormData
+            console.log("📦 FormData entries:");
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
             }
 
             await apiClient("http://localhost:3000/api/teacher/courses", {
@@ -79,8 +100,10 @@ const CreateCourse = () => {
                 body: formData
             });
 
+            console.log("✅ Tạo khóa học thành công!");
             navigate("/teacher/courses");
         } catch (err) {
+            console.error("❌ Lỗi khi tạo khóa học:", err);
             setError("Có lỗi xảy ra khi tạo khóa học. Vui lòng thử lại.");
         } finally {
             setLoading(false);
@@ -156,11 +179,15 @@ const CreateCourse = () => {
                     </label>
                     <div className="space-y-3">
                         <input
+                            ref={fileInputRef}
                             type="file"
                             accept="image/*"
                             onChange={handleThumbnailChange}
                             className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                         />
+                        <p className="text-sm text-gray-500">
+                            {thumbnail ? `Đã chọn: ${thumbnail.name}` : "Chưa chọn file (Sẽ sử dụng thumbnail mặc định)"}
+                        </p>
                         {thumbnailPreview && (
                             <div className="relative w-full max-w-md">
                                 <img 
@@ -170,10 +197,7 @@ const CreateCourse = () => {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        setThumbnail(null);
-                                        setThumbnailPreview("");
-                                    }}
+                                    onClick={handleRemoveThumbnail}
                                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
                                 >
                                     ×

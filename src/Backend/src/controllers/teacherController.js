@@ -40,7 +40,20 @@ export const getMyCourses = async (req, res) => {
         [teacher_id]
     );
 
-    res.json(rows);
+    // Format thumbnail URLs to be absolute
+    const coursesWithFullUrls = rows.map(course => {
+        if (course.thumbnail && !course.thumbnail.startsWith('http')) {
+            // Nếu thumbnail bắt đầu bằng 'uploads/' thì thêm base URL
+            if (course.thumbnail.startsWith('uploads/')) {
+                course.thumbnail = `http://localhost:3000/${course.thumbnail}`;
+            }
+            // Nếu thumbnail bắt đầu bằng '../' thì giữ nguyên (đây là path local)
+            // hoặc nếu là absolute path từ web thì giữ nguyên
+        }
+        return course;
+    });
+
+    res.json(coursesWithFullUrls);
 };
 
 // them bai hoc vao khoa hoc

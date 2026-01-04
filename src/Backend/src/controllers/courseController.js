@@ -6,7 +6,18 @@ export const getAllCourses = (req, res) => {
     const sql = "SELECT * FROM Courses ORDER BY created_at DESC";
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json({ message: "Database error", error: err });
-        res.status(200).json(results);
+        
+        // Format thumbnail URLs
+        const coursesWithFullUrls = results.map(course => {
+            if (course.thumbnail && !course.thumbnail.startsWith('http')) {
+                if (course.thumbnail.startsWith('uploads/')) {
+                    course.thumbnail = `http://localhost:3000/${course.thumbnail}`;
+                }
+            }
+            return course;
+        });
+        
+        res.status(200).json(coursesWithFullUrls);
     })
 }
 
@@ -22,7 +33,15 @@ export const getCourseById = (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
-        res.status(200).json(results[0]);
+        const course = results[0];
+        // Format thumbnail URL
+        if (course.thumbnail && !course.thumbnail.startsWith('http')) {
+            if (course.thumbnail.startsWith('uploads/')) {
+                course.thumbnail = `http://localhost:3000/${course.thumbnail}`;
+            }
+        }
+
+        res.status(200).json(course);
     });
 };
 
@@ -49,5 +68,16 @@ export const searchCourses = async (req, res) => {
     "SELECT  course_id, title, thumbnail FROM courses WHERE title LIKE ? LIMIT 10",
     [`%${q}%`]
   );
-  res.json(courses);
+  
+  // Format thumbnail URLs
+  const coursesWithFullUrls = courses.map(course => {
+    if (course.thumbnail && !course.thumbnail.startsWith('http')) {
+      if (course.thumbnail.startsWith('uploads/')) {
+        course.thumbnail = `http://localhost:3000/${course.thumbnail}`;
+      }
+    }
+    return course;
+  });
+  
+  res.json(coursesWithFullUrls);
 };

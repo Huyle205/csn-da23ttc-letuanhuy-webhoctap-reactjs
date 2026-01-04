@@ -100,6 +100,7 @@ const TeacherCourses = () => {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Thumbnail</th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tên khóa học</th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Năm</th>
                                 <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Hành động</th>
@@ -108,6 +109,25 @@ const TeacherCourses = () => {
                         <tbody className="divide-y">
                             {courses.map(c => (
                                 <tr key={c.course_id} className="hover:bg-gray-50 transition">
+                                    <td className="px-6 py-4">
+                                        <div className="w-20 h-12 rounded-lg overflow-hidden border border-gray-200">
+                                            {c.thumbnail ? (
+                                                <img 
+                                                    src={c.thumbnail} 
+                                                    alt={c.title}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                                                    No Image
+                                                </div>
+                                            )}
+                                        </div>
+                                    </td>
                                     <td className="px-6 py-4">
                                         <Link
                                             to={`/teacher/courses/${c.course_id}/lessons`}
