@@ -48,6 +48,10 @@ const TeacherCourses = () => {
 
     const fetchCourses = async () => {
         const data = await apiClient("http://localhost:3000/api/teacher/courses");
+        console.log('📚 Courses fetched:', data);
+        data.forEach(course => {
+            console.log(`Course: ${course.title}, Thumbnail: ${course.thumbnail}`);
+        });
         setCourses(data);
     };
 
@@ -117,8 +121,12 @@ const TeacherCourses = () => {
                                                     alt={c.title}
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {
+                                                        console.error('❌ Failed to load thumbnail:', c.thumbnail);
                                                         e.target.onerror = null;
                                                         e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                                                    }}
+                                                    onLoad={() => {
+                                                        console.log('✅ Thumbnail loaded successfully:', c.thumbnail);
                                                     }}
                                                 />
                                             ) : (

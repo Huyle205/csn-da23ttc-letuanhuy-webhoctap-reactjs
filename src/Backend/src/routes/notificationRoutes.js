@@ -1,7 +1,7 @@
 import express from "express";
-import { getNotifications } from "../controllers/NotificationController.js";
-import { markAsRead } from "../controllers/NotificationController.js";
+import { getNotifications, markAsRead, sendNotificationToAllStudents } from "../controllers/NotificationController.js";
 const router = express.Router();
 router.get("/", getNotifications);
-router.patch("/:id/read",  markAsRead)
+router.patch("/:id/read",  markAsRead);
+router.post("/broadcast-students", sendNotificationToAllStudents);
 export default router;

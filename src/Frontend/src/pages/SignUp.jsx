@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { toast } from "sonner";
 
 export default function SignUp() {
   const [form, setForm] = useState({
@@ -58,14 +59,14 @@ export default function SignUp() {
     const data = await res.json();
 
     if (res.ok) {
-      alert("Đăng ký thành công! Chuyển sang trang đăng nhập.");
+      toast.success("Đăng ký thành công! Chuyển sang trang đăng nhập.");
       window.location.href = "/signin";
     } else {
-      alert(data.message || "Đăng ký thất bại!");
+      toast.error(data.message || "Đăng ký thất bại!");
     }
   } catch (error) {
       console.error("Error during signup:", error);
-      alert("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+      toast.error("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }

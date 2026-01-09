@@ -1,5 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logout } from "../utils/auth";
+import { toast } from "sonner";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChalkboardTeacher, faChartLine, faBook, faBookOpen, faVial, faHome, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,10 +12,10 @@ const TeacherLayout = () => {
   const handleLogout = async () => {
     const success = await logout();
     if (success) {
-      alert("Đăng xuất thành công!");
+      toast.success("Đăng xuất thành công!");
       navigate("/signin"); // chuyển về login
     } else {
-      alert("Đăng xuất thất bại!");
+      toast.error("Đăng xuất thất bại!");
     }
   };
 

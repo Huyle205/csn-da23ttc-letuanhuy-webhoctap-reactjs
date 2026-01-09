@@ -7,6 +7,13 @@ const RequireRole = ({ role, children }) => {
     if (!user) return <Navigate to="/signin" />;
 
     if (user.role !== role) {
+        // Redirect về trang phù hợp với role của user
+        if (user.role === 'teacher') {
+            return <Navigate to="/teacher" />;
+        }
+        if (user.role === 'admin') {
+            return <Navigate to="/admin" />;
+        }
         return <Navigate to="/" />;
     }
 

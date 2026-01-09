@@ -1,11 +1,18 @@
 import { Navigate } from "react-router-dom";
-import { getUserRole } from "../utils/auth";
+import { getUserFromToken } from "../utils/auth";
 
 const TeacherRoute = ({ children }) => {
-    const role = getUserRole();
+    const user = getUserFromToken();
 
-    if (!role) return <Navigate to="/signin" />;
-    if (role !== "teacher") return <Navigate to="/" />;
+    if (!user) return <Navigate to="/signin" />;
+    
+    if (user.role !== "teacher") {
+        // Redirect về trang phù hợp với role
+        if (user.role === 'admin') {
+            return <Navigate to="/admin" />;
+        }
+        return <Navigate to="/" />;
+    }
 
     return children;
 };

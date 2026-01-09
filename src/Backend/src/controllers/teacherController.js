@@ -3,18 +3,31 @@ import db from "../config/db.js";
 // Tạo khóa học
 export const createCourse = async (req, res) => {
     const teacher_id = req.user.user_id;
-    const { title, description, year } = req.body;
-    let defaultthumbnail = req.body.defaultThumbnail;
-    let thumbnail = req.file ? req.file.path : null;
+    const { title, description, year, defaultThumbnail } = req.body;
+    let thumbnail = null;
     
-    // Nếu không upload file và có defaultThumbnail, sử dụng defaultThumbnail
-    if (!thumbnail && defaultthumbnail) {
-        thumbnail = defaultthumbnail;
+    // Nếu có upload file thì sử dụng path của file
+    if (req.file) {
+        // Normalize path: replace backslashes with forward slashes
+        thumbnail = req.file.path.replace(/\\/g, '/');
+    } else if (defaultThumbnail) {
+        // Nếu không upload file và có defaultThumbnail, sử dụng defaultThumbnail
+        thumbnail = defaultThumbnail;
     }
 
     if (!title || !year) {
         return res.status(400).json({ message: "Thiếu thông tin bắt buộc" });
     }
+
+    console.log('📸 Thumbnail received:', { 
+        uploadedFile: req.file ? {
+            originalname: req.file.originalname,
+            path: req.file.path,
+            size: req.file.size
+        } : null,
+        defaultThumbnail, 
+        finalThumbnail: thumbnail 
+    });
 
     try {   
         await db.promise().query(
@@ -23,8 +36,9 @@ export const createCourse = async (req, res) => {
             [title, description, year, teacher_id, thumbnail]
         );
 
-        res.json({ message: "Tạo khóa học thành công" });
+        res.json({ message: "Tạo khóa học thành công", thumbnail });
     } catch (err) {
+        console.error('❌ Error creating course:', err);
         res.status(500).json({ message: "Lỗi tạo khóa học", error: err.message });
     }
 };

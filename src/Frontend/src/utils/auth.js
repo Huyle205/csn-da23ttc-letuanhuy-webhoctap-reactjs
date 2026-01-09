@@ -18,8 +18,22 @@ export const logout = async () => {
   }
 };
 
+export const getUserFromToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return null;
 
-
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return {
+            user_id: payload.user_id,
+            username: payload.username,
+            email: payload.email,
+            role: payload.role
+        };
+    } catch (err) {
+        return null;
+    }
+};
 
 export const getUserRole = () => {
     const token = localStorage.getItem("accessToken");

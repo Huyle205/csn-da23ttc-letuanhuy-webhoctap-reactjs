@@ -22,22 +22,30 @@ export const signUp = async (req, res) => {
     try {
         // lay du lieu tu nguoi dung gui len trong body
         const { name, email, password, role = "student" } = req.body;
-        //kiem tra xem nguoi dung da ton tai chua
-        // const checkUserSql = "SELECT * FROM users WHERE name = ?";
-        // db.query(checkUserSql, [name], async (err, result) => {
-        //     if (err) return res.status(500).json({ mressage: "Database error", error: err })
-        //     if (result.length > 0) {
-        //         return res.status(400).json({ message: "Username da ton tai" })
-        //     }
-        // })
 
+        // Validate input
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: "Vui lòng điền đầy đủ thông tin" });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Email không hợp lệ" });
+        }
+
+        // Validate password length
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Mật khẩu phải có ít nhất 6 ký tự" });
+        }
+
+        // Kiểm tra email đã tồn tại
         const checkUserSql = "SELECT * FROM users WHERE email = ?";
         const [existingUser] = await db.promise().query(checkUserSql, [email]);
 
         if (existingUser.length > 0) {
             return res.status(400).json({ message: "Email đã tồn tại" });
         }
-
 
         // ma hoa mat khau
         const hashedPassword = await bcrypt.hash(password, 10);// salt rounds = 10
@@ -169,14 +177,24 @@ export const refreshToken = async (req, res) => {
             return res.status(403).json({ message: "Refresh token đã hết hạn" });
         }
 
-        // 4. Tạo access token MỚI
+        // 4. Lấy thông tin user để tạo access token có đầy đủ thông tin
+        const sqlGetUser = "SELECT user_id, role FROM users WHERE user_id = ?";
+        const [users] = await db.promise().execute(sqlGetUser, [refreshTokenData.user_id]);
+        
+        if (users.length === 0) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        
+        const user = users[0];
+
+        // 5. Tạo access token MỚI với đầy đủ thông tin user_id và role
         const newAccessToken = jwt.sign(
-            { user_id: refreshTokenData.user_id },
+            { user_id: user.user_id, role: user.role },
             process.env.JWT_ACCESS_TOKEN_SECRET,
             { expiresIn: "15m" }
         );
 
-        // 5. Trả access token về cho frontend
+        // 6. Trả access token về cho frontend
         return res.status(200).json({ accessToken: newAccessToken });
 
     } catch (error) {

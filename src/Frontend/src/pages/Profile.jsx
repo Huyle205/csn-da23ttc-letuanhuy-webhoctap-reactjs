@@ -1,4 +1,5 @@
 import { use, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { apiClient } from "../services/apiClient";
 import { useNavigate } from "react-router";
 import { logout } from "../utils/auth.js";
@@ -58,10 +59,10 @@ export default function Profile() {
     const handleLogout = async () => {
         const success = await logout();
         if (success) {
-            alert("Đăng xuất thành công!");
+            toast.success("Đăng xuất thành công!");
             navigate("/signin"); // chuyển về login
         } else {
-            alert("Đăng xuất thất bại!");
+            toast.error("Đăng xuất thất bại!");
         }
     };
 

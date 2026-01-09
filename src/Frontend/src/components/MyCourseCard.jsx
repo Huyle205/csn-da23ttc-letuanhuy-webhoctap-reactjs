@@ -25,7 +25,6 @@ const MyCourseCard = ({ course, id, handleClick, percent }) => {
             className="group cursor-pointer rounded-xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 bg-white w-full min-w-72 hover:-translate-y-1">
             <div className="p-5">
                 <h2 className="text-[22px] font-semibold mb-2 line-clamp-1 text-gray-800">{course.title}</h2>
-                <p className="text-gray-500 text-[15px] line-clamp-1 mb-3">{course.description}</p>
                 <p className="font-semibold text-[15px] mb-4">
                     {percent !== 100 ? (
                         <span className="text-yellow-500 bg-yellow-100 px-2 py-1 rounded-lg">

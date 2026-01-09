@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Toaster, toast } from 'sonner'
 import './App.css'
 import MainLayout from './layouts/MainLayout.jsx'
 import Home from './pages/Home.jsx'
@@ -52,16 +53,21 @@ function App() {
   }
 
   return (
+
+
+    
     <>
+
+     <Toaster  position="top-right" richColors/>
       <ScrollToTop />
       <Routes>
         {/* Public routes */}
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* Protected routes - Main Layout */}
+        {/* Protected routes - Main Layout (chỉ cho student) */}
         <Route path="/" element={
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={['student']}>
             <MainLayout />
           </PrivateRoute>
         }>
@@ -72,11 +78,11 @@ function App() {
           <Route path="profile" element={<Profile />} />
         </Route>
 
-        {/* Learning Layout */}
+        {/* Learning Layout (chỉ cho student) */}
         <Route
           path="/course/:id/learning"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={['student']}>
               <LearningLayout />
             </PrivateRoute>
           }
@@ -106,7 +112,9 @@ function App() {
         <Route
           path="/admin"
           element={
-            <AdminLayout />
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminLayout />
+            </PrivateRoute>
           }
         >
           <Route index element={<AdminDashboard />} />

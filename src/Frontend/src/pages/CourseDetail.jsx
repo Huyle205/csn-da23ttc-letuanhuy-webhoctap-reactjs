@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import LessonList from "../components/LessonList";
 import { apiClient } from "../services/apiClient";
 
@@ -28,10 +29,10 @@ const CourseDetail = () => {
 
             
             if (data) {
-                alert("Đăng ký khóa học thành công!");
+                toast.success("Đăng ký khóa học thành công!");
                 navigate(`/course/${id}/learning`);
             } else {
-                alert(data.message || "Đăng ký khóa học thất bại!");
+                toast.error(data.message || "Đăng ký khóa học thất bại!");
             }
         } catch (error) {
             console.error("Error enrolling in course:", error);

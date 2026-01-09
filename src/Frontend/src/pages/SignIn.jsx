@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { toast } from "sonner";
 
 export default function SignIn() {
   const [form, setForm] = useState({
@@ -68,6 +69,7 @@ export default function SignIn() {
     const data = await res.json();
 
     if (res.ok) {
+      toast.success("Đăng nhập thành công!");
       //  lưu token
       localStorage.setItem("accessToken", data.accessToken);
 
@@ -82,9 +84,9 @@ export default function SignIn() {
       } else {
         window.location.href = "/";
       }
-
+      
     } else {
-      alert(data.message || "Đăng nhập thất bại!");
+      toast.error("Email hoặc mật khẩu không đúng!");
     }
   };
 
