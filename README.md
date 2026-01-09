@@ -133,7 +133,7 @@ Hệ thống giúp sinh viên xem lại bài học, ôn tập kiến thức và 
 
 - phpMyAdmin
 
-### Xác thực \& phân quyền
+### Xác thực & phân quyền
 
 - JSON Web Token (JWT)
 
@@ -161,9 +161,9 @@ Hệ thống sử dụng cơ sở dữ liệu MySQL gồm các bảng chính nh�
 
 - quizzes
 
-- quiz\_questions
+- quiz_questions
 
-- quiz\_results
+- quiz_results
 
-\- enrollments
+- enrollments
 
